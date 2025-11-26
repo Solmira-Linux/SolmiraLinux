@@ -1,0 +1,11 @@
+NAME="Solmira Linux"
+PRETTY_NAME="Solmira Linux"
+ID=solmira
+BUILD_ID=rolling
+ANSI_COLOR="38;2;144;238;144"
+HOME_URL="https://github.com/Solmira-Linux/SolmiraLinux/"
+DOCUMENTATION_URL="https://github.com/Solmira-Linux/SolmiraLinux/"
+SUPPORT_URL="https://github.com/Solmira-Linux/SolmiraLinux/issues"
+BUG_REPORT_URL="https://github.com/Solmira-Linux/SolmiraLinux/issues"
+PRIVACY_POLICY_URL="https://github.com/Solmira-Linux/SolmiraLinux"
+LOGO=solmira-logo
