@@ -2,3 +2,5 @@ Welcome to Solmira Linux!
 
 If you are reading this, the KDE Plasma desktop environment should be launching.
 
+If KDE Plasma does not launch, try running the "./start.sh" command.
+
