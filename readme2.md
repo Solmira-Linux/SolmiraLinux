@@ -1,33 +1,5 @@
-<!-- Improved compatibility of back to top link: See: https://github.com/othneildrew/Best-README-Template/pull/73 -->
 <a id="readme-top"></a>
-<!--
-*** Thanks for checking out the Best-README-Template. If you have a suggestion
-*** that would make this better, please fork the repo and create a pull request
-*** or simply open an issue with the tag "enhancement".
-*** Don't forget to give the project a star!
-*** Thanks again! Now go create something AMAZING! :D
--->
 
-
-
-<!-- PROJECT SHIELDS -->
-<!--
-*** I'm using markdown "reference style" links for readability.
-*** Reference links are enclosed in brackets [ ] instead of parentheses ( ).
-*** See the bottom of this document for the declaration of the reference variables
-*** for contributors-url, forks-url, etc. This is an optional, concise syntax you may use.
-*** https://www.markdownguide.org/basic-syntax/#reference-style-links
--->
-[![Contributors][contributors-shield]][contributors-url]
-[![Forks][forks-shield]][forks-url]
-[![Stargazers][stars-shield]][stars-url]
-[![Issues][issues-shield]][issues-url]
-[![GPL v3][license-shield]][license-url]
-[![LinkedIn][linkedin-shield]][linkedin-url]
-
-
-
-<!-- PROJECT LOGO -->
 <br />
 <div align="center">
   <a href="https://github.com/Solmira-Linux/SolmiraLinux">
@@ -85,22 +57,6 @@
 
 [![Product Name Screen Shot][product-screenshot]](https://example.com)
 
-Here's a blank template to get started. To avoid retyping too much info, do a search and replace with your text editor for the following: `Solmira-Linux`, `SolmiraLinux`, `Lazymanzoid`, `linkedin_username`, `email_client`, `email`, `Solmira Linux`, `Solmira Linux is a free and open-source Linux distribution based off Arch Linux. The goal of Solmira Linux is to provide an easy-to-use distribution with the base of Arch.`, `GPL v3`
-
-<p align="right">(<a href="#readme-top">back to top</a>)</p>
-
-
-
-### Built With
-
-* [![Next][Next.js]][Next-url]
-* [![React][React.js]][React-url]
-* [![Vue][Vue.js]][Vue-url]
-* [![Angular][Angular.io]][Angular-url]
-* [![Svelte][Svelte.dev]][Svelte-url]
-* [![Laravel][Laravel.com]][Laravel-url]
-* [![Bootstrap][Bootstrap.com]][Bootstrap-url]
-* [![JQuery][JQuery.com]][JQuery-url]
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
@@ -159,7 +115,7 @@ _For more examples, please refer to the [Documentation](https://example.com)_
 <!-- ROADMAP -->
 ## Roadmap
 
-- [ ] Feature 1
+- [ ] Installer Script
 - [ ] Feature 2
 - [ ] Feature 3
     - [ ] Nested Feature
@@ -206,7 +162,7 @@ Distributed under the GPL v3. See `LICENSE.txt` for more information.
 <!-- CONTACT -->
 ## Contact
 
-Your Name - [@Lazymanzoid](https://twitter.com/Lazymanzoid) - email@email_client.com
+Your Name - Lazymanzoid - lazymanzoid@outlook.com
 
 Project Link: [https://github.com/Solmira-Linux/SolmiraLinux](https://github.com/Solmira-Linux/SolmiraLinux)
 
@@ -217,6 +173,7 @@ Project Link: [https://github.com/Solmira-Linux/SolmiraLinux](https://github.com
 <!-- ACKNOWLEDGMENTS -->
 ## Acknowledgments
 
+nothing yet lmao
 * []()
 * []()
 * []()
