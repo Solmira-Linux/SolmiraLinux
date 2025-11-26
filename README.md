@@ -1,4 +1,4 @@
-[screenshots/solmiralogowide.png]
+![Screenshot of a comment on a GitHub issue showing an image, added in the Markdown, of an Octocat smiling and raising a tentacle.](screenshots/solmiralogowide.png)
 # Solmira Linux
 
 Solmira Linux is a free and open-source Linux distribution based off Arch Linux. The goal of Solmira Linux is to provide an easy-to-use distribution with the base of Arch.
