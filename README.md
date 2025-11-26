@@ -24,7 +24,7 @@
 <h3 align="center">Solmira Linux</h3>
 
   <p align="center">
-    Solmira Linux is a free and open-source Linux distribution based off Arch Linux. The goal of Solmira Linux is to provide an easy-to-use distribution with the base of Arch.
+    Solmira Linux is a free and open-source Linux distribution based on Arch Linux. The goal of Solmira Linux is to provide an easy-to-use distribution with the base of Arch.
     <br />
     <a href="https://github.com/Solmira-Linux/SolmiraLinux"><strong>Explore the docs »</strong></a>
     <br />
