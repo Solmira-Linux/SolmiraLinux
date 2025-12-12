@@ -16,9 +16,13 @@ gauge_step() {
     sleep 0.3
 }
 
+# -----------------------------
+# BASIC CHECKS
+# -----------------------------
 check_root() {
     if [ "$(id -u)" != 0 ]; then
-        whiptail --msgbox "This installer must be launched as root." 8 50
+        whiptail --title "Error" \
+        --msgbox "This installer must be launched as root." 8 50
         exit 1
     fi
 }
@@ -33,14 +37,17 @@ welcome_screen() {
 # -----------------------------
 select_disk() {
     mapfile -t items < <(lsblk -d -o NAME,SIZE | tail -n +2 | awk '{print "/dev/"$1, $2}')
-    CHOICE=$(whiptail --title "Select Disk" --menu "Choose installation disk:" 20 60 10 \
+
+    CHOICE=$(whiptail --title "Select Disk" \
+        --menu "Choose installation disk:" 20 60 10 \
         "${items[@]}" 3>&1 1>&2 2>&3)
+
     echo "$CHOICE"
 }
 
 confirm_wipe() {
     DEV="$1"
-    whiptail --yesno "Note that this will ERASE ALL DATA on $DEV. Do you want to continue?" 10 60 || exit 1
+    whiptail --yesno "WARNING: This will ERASE ALL DATA on $DEV. Continue?" 10 60 || exit 1
 }
 
 # -----------------------------
@@ -68,6 +75,7 @@ w
 EOF
 
     base=$(basename "$DEV")
+
     if [[ "$base" =~ ^(nvme|mmcblk) ]]; then
         export EFI="/dev/${base}p1"
         export ROOT="/dev/${base}p2"
@@ -91,16 +99,13 @@ mount_partitions() {
 # -----------------------------
 # SYSTEM CONFIG
 # -----------------------------
-
 set_locale() {
     LOCALE=$(whiptail --inputbox "Enter locale (default: en_US.UTF-8):" \
         10 60 "en_US.UTF-8" 3>&1 1>&2 2>&3)
 
-    # Enable in locale.gen
     arch-chroot /mnt sed -i "s/#$LOCALE UTF-8/$LOCALE UTF-8/" /etc/locale.gen
     arch-chroot /mnt locale-gen
 
-    # Set system locale
     echo "LANG=$LOCALE" > /mnt/etc/locale.conf
 }
 
@@ -119,35 +124,33 @@ set_keymap() {
     echo "KEYMAP=$KEYMAP" > /mnt/etc/vconsole.conf
 }
 
-
 set_hostname() {
-    HOST=$(whiptail --inputbox "Enter hostname:" 10 60 "solmira" 3>&1 1>&2 2>&3)
+    HOST=$(whiptail --inputbox "Enter hostname:" \
+        10 60 "solmira" 3>&1 1>&2 2>&3)
+
     echo "$HOST" > /mnt/etc/hostname
 }
 
 create_user() {
-    USERNAME=$(whiptail --inputbox "Enter username:" 10 60 "user" 3>&1 1>&2 2>&3)
-    PASS=$(whiptail --passwordbox "Enter password:" 10 60 3>&1 1>&2 2>&3)
+    USERNAME=$(whiptail --inputbox "Enter username:" \
+        10 60 "user" 3>&1 1>&2 2>&3)
 
-    # Set root password
+    PASS=$(whiptail --passwordbox "Enter password:" \
+        10 60 3>&1 1>&2 2>&3)
+
     echo "root:$PASS" | arch-chroot /mnt chpasswd
-
-    # Create user with wheel group + home directory
     arch-chroot /mnt useradd -m -G wheel "$USERNAME"
-
-    # Set user password
     echo "$USERNAME:$PASS" | arch-chroot /mnt chpasswd
 
-    # Enable sudo for wheel (safe because it's a controlled installer)
-    arch-chroot /mnt bash -c 'echo "%wheel ALL=(ALL:ALL) ALL" > /etc/sudoers.d/00-wheel'
+    arch-chroot /mnt bash -c 'echo "%wheel ALL=(ALL) ALL" > /etc/sudoers.d/00-wheel'
     arch-chroot /mnt chmod 440 /etc/sudoers.d/00-wheel
 }
 
 # -----------------------------
-# INSTALL BASE SYSTEM
+# BASE SYSTEM
 # -----------------------------
 install_base() {
-    pacstrap /mnt base linux linux-firmware networkmanager grub efibootmgr base-devel ntfs-3g sudo nano vim
+    pacstrap /mnt base linux linux-firmware networkmanager grub efibootmgr base-devel sudo nano vim
 }
 
 generate_fstab() {
@@ -155,10 +158,11 @@ generate_fstab() {
 }
 
 install_bootloader() {
-    arch-chroot /mnt grub-install --target=x86_64-efi --efi-directory=/boot/efi --bootloader-id=Solmira Linux
+    arch-chroot /mnt grub-install --target=x86_64-efi --efi-directory=/boot/efi --bootloader-id="Solmira Linux"
     arch-chroot /mnt grub-mkconfig -o /boot/grub/grub.cfg
 }
 
 finish_screen() {
-    whiptail --title "Done! :D" --msgbox "Solmira Linux has been installed on your computer.\nYou can restart your system or keep using the Live Environment." 10 60
+    whiptail --title "Done! :D" \
+    --msgbox "Solmira Linux has been successfully installed.\nYou may now reboot." 10 60
 }
