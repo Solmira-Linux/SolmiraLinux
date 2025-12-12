@@ -91,6 +91,35 @@ mount_partitions() {
 # -----------------------------
 # SYSTEM CONFIG
 # -----------------------------
+
+set_locale() {
+    LOCALE=$(whiptail --inputbox "Enter locale (default: en_US.UTF-8):" \
+        10 60 "en_US.UTF-8" 3>&1 1>&2 2>&3)
+
+    # Enable in locale.gen
+    arch-chroot /mnt sed -i "s/#$LOCALE UTF-8/$LOCALE UTF-8/" /etc/locale.gen
+    arch-chroot /mnt locale-gen
+
+    # Set system locale
+    echo "LANG=$LOCALE" > /mnt/etc/locale.conf
+}
+
+set_timezone() {
+    TIMEZONE=$(whiptail --inputbox "Enter timezone (example: America/New_York):" \
+        10 60 "America/New_York" 3>&1 1>&2 2>&3)
+
+    arch-chroot /mnt ln -sf "/usr/share/zoneinfo/$TIMEZONE" /etc/localtime
+    arch-chroot /mnt hwclock --systohc
+}
+
+set_keymap() {
+    KEYMAP=$(whiptail --inputbox "Enter keyboard layout (default: us):" \
+        10 60 "us" 3>&1 1>&2 2>&3)
+
+    echo "KEYMAP=$KEYMAP" > /mnt/etc/vconsole.conf
+}
+
+
 set_hostname() {
     HOST=$(whiptail --inputbox "Enter hostname:" 10 60 "solmira" 3>&1 1>&2 2>&3)
     echo "$HOST" > /mnt/etc/hostname
