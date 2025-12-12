@@ -6,13 +6,11 @@ source "$(dirname "$0")/functions.sh"
 check_root
 welcome_screen
 
+TARGET_DISK=$(select_disk)
+confirm_wipe "$TARGET_DISK"
+
+
 (
-    gauge_step 5  "Selecting disk..."
-    TARGET_DISK=$(select_disk)
-
-    gauge_step 10 "Confirming wipe..."
-    confirm_wipe "$TARGET_DISK"
-
     gauge_step 20 "Partitioning disk..."
     create_partitions_fdisk "$TARGET_DISK"
 
