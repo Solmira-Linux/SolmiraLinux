@@ -43,6 +43,14 @@ welcome_screen
     gauge_step 90 "Creating user..."
     create_user
 
+    gauge_step 92 "Asking about AUR support..."
+    AUR_CHOICE=$(ask_aur)
+
+    if [ "$AUR_CHOICE" = "yes" ]; then
+        gauge_step 95 "Installing AUR helper..."
+        install_paru "$USERNAME"
+    fi
+
     gauge_step 100 "Installing bootloader..."
     install_bootloader
 
