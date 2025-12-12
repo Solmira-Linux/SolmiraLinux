@@ -150,7 +150,11 @@ create_user() {
 # BASE SYSTEM
 # -----------------------------
 install_base() {
-    pacstrap /mnt base linux linux-firmware networkmanager grub efibootmgr base-devel sudo nano vim
+    # Base system packages
+    pacstrap -K /mnt base linux linux-firmware networkmanager grub efibootmgr base-devel sudo nano vim
+
+    # KDE Plasma and other applications
+    pacstrap -K /mnt plasma-meta dolphin konsole kate partitionmanager okular libreoffice-still firefox gwenview kalk haruna elisa rustup gamemode gamescope gimp inkscape
 }
 
 generate_fstab() {
