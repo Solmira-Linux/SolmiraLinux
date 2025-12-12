@@ -144,6 +144,35 @@ create_user() {
 
     arch-chroot /mnt bash -c 'echo "%wheel ALL=(ALL) ALL" > /etc/sudoers.d/00-wheel'
     arch-chroot /mnt chmod 440 /etc/sudoers.d/00-wheel
+
+    
+}
+
+
+ask_aur() {
+    if whiptail --yesno "Would you like to enable the Arch User Repository (AUR) using paru?" 10 60 ; then
+        echo "yes"
+    else
+        echo "no"
+    fi
+}
+
+
+install_paru() {
+    USERNAME="$1"
+
+    # Install dependencies for makepkg
+    arch-chroot /mnt pacman -S --noconfirm --needed base-devel git
+
+    # Build paru in user's home directory
+    arch-chroot /mnt bash -c "
+        sudo -u $USERNAME bash -c '
+            cd ~ &&
+            git clone https://aur.archlinux.org/paru.git &&
+            cd paru &&
+            makepkg -si --noconfirm
+        '
+    "
 }
 
 # -----------------------------
@@ -154,7 +183,7 @@ install_base() {
     pacstrap -K /mnt base linux linux-firmware networkmanager grub efibootmgr base-devel sudo nano vim
 
     # KDE Plasma and other applications
-    pacstrap -K /mnt plasma-meta dolphin konsole kate partitionmanager okular libreoffice-still firefox gwenview kalk haruna elisa rustup gamemode gamescope gimp inkscape
+    pacstrap -K /mnt plasma-meta dolphin konsole kate partitionmanager okular libreoffice-still firefox gwenview kalk haruna elisa rustup gamemode gamescope gimp inkscape rustup &7 rustup default stable
 }
 
 generate_fstab() {
