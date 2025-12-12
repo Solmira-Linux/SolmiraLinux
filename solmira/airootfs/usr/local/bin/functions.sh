@@ -180,7 +180,7 @@ install_paru() {
 # -----------------------------
 install_base() {
     # Base system packages
-    pacstrap /mnt base linux linux-firmware networkmanager grub efibootmgr base-devel sudo nano vim
+    pacstrap /mnt base linux linux-firmware linux-headers networkmanager grub efibootmgr base-devel sudo nano vim
 
     # KDE Plasma and other applications
     pacstrap /mnt plasma-meta dolphin konsole kate partitionmanager okular libreoffice-still firefox gwenview kalk haruna elisa rustup gamemode gamescope gimp inkscape rustup flatpak && rustup default stable
