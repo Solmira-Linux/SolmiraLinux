@@ -1,0 +1,8 @@
+[Desktop Entry]
+Type=Application
+Name=Install Solmira Linux
+Comment=Start the Solmira Linux installer
+Exec=/usr/local/bin/installer.sh
+Icon=system-software-install
+Terminal=false
+Categories=System;Settings;
