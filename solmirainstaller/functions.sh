@@ -86,14 +86,14 @@ EOF
 }
 
 format_partitions() {
-    mkfs.fat -F32 "$EFI"
+    mkfs.fat -F 32 "$EFI"
     mkfs.ext4 -F "$ROOT"
 }
 
 mount_partitions() {
     mount "$ROOT" /mnt
-    mkdir -p /mnt/boot/efi
-    mount "$EFI" /mnt/boot/efi
+    mkdir -p /mnt/boot/
+    mount "$EFI" /mnt/boot/
 }
 
 # -----------------------------
@@ -191,7 +191,7 @@ generate_fstab() {
 }
 
 install_bootloader() {
-    arch-chroot /mnt grub-install --target=x86_64-efi --efi-directory=/boot/efi --bootloader-id="Solmira Linux"
+    arch-chroot /mnt grub-install --target=x86_64-efi --efi-directory=/boot --bootloader-id="Solmira Linux"
     arch-chroot /mnt grub-mkconfig -o /boot/grub/grub.cfg
 }
 
