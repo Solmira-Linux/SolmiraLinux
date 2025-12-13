@@ -1,7 +1,9 @@
 Solmira Linux (GitHub Mirror)
 =============
 
-Solmira Linux is a free and open-source Linux distribution based on Arch Linux released under the GPL-3.0 license. The goal of Solmira Linux is to provide an easy-to-use distribution with the base of Arch. Keep in mind that as of right now, this distro is broken. Installer doesn't work and probably isn't safe to use as a daily driver.
+Solmira Linux is a free and open-source Linux distribution based on Arch Linux released under the GPL-3.0 license. The goal of Solmira Linux is to provide an easy-to-use distribution with the base of Arch. 
+
+Keep in mind that as of right now, this distro is broken. Installer doesn't work and probably isn't safe to use as a daily driver.
 
 ### ⚠️ Note that development of this project happens on Codeberg. So please open pull requests there. Any pull requests on this mirror will be closed.
 
