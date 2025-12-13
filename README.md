@@ -8,7 +8,14 @@ Solmira Linux is a free and open-source Linux distribution based on Arch Linux. 
 
 You can build an ISO through the Codeberg repository, which will allow you to receive the latest updates.
 
-You can also build the ISO through the GitHub mirror, but there is a chance for this mirror to not be properly updated, so always use Codeberg if you can.
+You can also build the ISO through the GitHub mirror, but there is a chance for this mirror to not be properly updated, so always use Codeberg if you can. 
+
+## System Requirements
+These are the recommended system requirements to build a Solmira Linux image:
+- Arch Linux (Kernel version 6.12+ recommended)
+- Fast internet connection (Ethernet recommended)
+
+Of course, you can also use any other Arch-based distro like EndeavourOS to build this image.
 
 ### Prerequisites
 
