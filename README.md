@@ -28,12 +28,12 @@ To get started, you will need to make sure you have the archiso packaged install
    ```bash
    cd SolmiraLinux/solmira
    ```
-   This is the directory where you will make changes to the distribution.
+   This is the directory that contains the necessary files to build a live image.
    
    
 #### 3. Build the ISO.
    
-   Once you finish your changes, you can test them out by building the ISO.
+   You can then build the image with this command:
    ```bash
    sudo mkarchiso -v .
    ```
