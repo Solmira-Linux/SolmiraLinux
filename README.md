@@ -8,6 +8,7 @@ Solmira Linux is a free and open-source Linux distribution based on Arch Linux r
 
 #### Codeberg repository: https://codeberg.org/Solmira-Linux/SolmiraLinux
 
+If you are already viewing this on Codeberg, you can ignore this warning.
 
 
 
