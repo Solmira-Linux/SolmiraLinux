@@ -15,6 +15,7 @@ You can also build the ISO through the GitHub mirror, but there is a chance for 
 All repositories:
 
 [Codeberg (Recommended)](https://codeberg.org/Solmira-Linux/SolmiraLinux)
+
 [GitHub Mirror](https://github.com/Solmira-Linux/SolmiraLinux)
 
 
