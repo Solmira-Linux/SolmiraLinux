@@ -21,7 +21,7 @@ To get started, you will need to make sure you have the archiso packaged install
 
 #### 1. Clone the repo
    ```bash
-   git clone https://github.com/Solmira-Linux/SolmiraLinux.git
+   git clone https://codeberg.org/Solmira-Linux/SolmiraLinux.git
    ```
    
 #### 2. Change into the new directory
