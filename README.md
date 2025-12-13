@@ -6,9 +6,9 @@ Solmira Linux is a free and open-source Linux distribution based on Arch Linux. 
 
 ## Getting Started
 
-Solmira Linux ISOs can be found in the Releases page.
+You can build an ISO through the Codeberg repository, which will allow you to receive the latest updates.
 
-You can also build an ISO through the GitHub repository, which will allow you to receive the latest updates.
+You can also build the ISO through the GitHub mirror, but there is a chance for this mirror to not be properly updated, so always use Codeberg if you can.
 
 ### Prerequisites
 
