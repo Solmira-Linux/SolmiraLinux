@@ -26,9 +26,9 @@ Of course, you can also use any other Arch-based distro like EndeavourOS to buil
 
 ### Prerequisites
 
-To get started, you will need to make sure you have the archiso packaged installed.
+To get started, you will need to make sure you have the archiso packaged installed along with base-devel and git.
   ```bash
-  sudo pacman -S archiso
+  sudo pacman -S --needed base-devel git archiso
   ```
 
 ### Build Process
