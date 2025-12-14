@@ -1,60 +1,59 @@
 #!/bin/bash
-set -e
 
 LOG="/tmp/solmira-install.log"
 
-# -----------------------------
-# GAUGE SUPPORT
-# -----------------------------
-gauge_step() {
-    PERCENT="$1"
-    MESSAGE="$2"
-    echo "$PERCENT"
-    echo "XXX"
-    echo "$PERCENT"
-    echo "$MESSAGE"
-    echo "XXX"
-    sleep 0.3
+log() {
+    echo "[INFO] $*" | tee -a "$LOG"
 }
 
-# -----------------------------
-# BASIC CHECKS
-# -----------------------------
+fail() {
+    echo "[ERROR] $*" | tee -a "$LOG"
+    whiptail --title "Error" --msgbox "$*" 10 60
+    exit 1
+}
+
+gauge_step() {
+    local percent="$1"
+    local msg="$2"
+    echo "$percent"
+    echo "XXX"
+    echo "$percent"
+    echo "$msg"
+    echo "XXX"
+}
+
 check_root() {
-    if [ "$(id -u)" != 0 ]; then
-        whiptail --title "Error" --msgbox "This installer must be run as root." 8 50
-        exit 1
+    if [[ $(id -u) -ne 0 ]]; then
+        fail "Installer must be run as root."
     fi
 }
 
 welcome_screen() {
-    whiptail --title "Welcome to Solmira Linux!" \
-        --msgbox "This installer will guide you through installing Solmira Linux on your computer." 10 60
+    whiptail --title "Welcome to Solmira Linux" \
+        --msgbox "This installer will guide you through installing Solmira Linux." 10 60 \
+        || exit 0
 }
 
-# -----------------------------
-# DISK SELECTION
-# -----------------------------
 select_disk() {
-    mapfile -t items < <(lsblk -d -o NAME,SIZE | tail -n +2 | awk '{print "/dev/"$1, $2}')
-    [ "${#items[@]}" -eq 0 ] && { whiptail --msgbox "No disks detected." 8 40; exit 1; }
+    mapfile -t items < <(lsblk -d -o NAME,SIZE | awk 'NR>1 {print "/dev/"$1, $2}')
+    [[ ${#items[@]} -eq 0 ]] && fail "No disks detected."
 
-    whiptail --title "Select Disk" \
-        --menu "Choose installation disk:" 20 60 10 \
+    whiptail --title "Disk Selection" \
+        --menu "Select installation disk:" 20 60 10 \
         "${items[@]}" 3>&1 1>&2 2>&3
 }
 
 confirm_wipe() {
-    whiptail --yesno "WARNING: This will ERASE ALL DATA on $1.\nContinue?" 10 60 || exit 1
+    whiptail --yesno "ALL DATA ON $1 WILL BE ERASED.\nContinue?" 10 60 \
+        || fail "Installation cancelled."
 }
 
-# -----------------------------
-# PARTITIONING
-# -----------------------------
-create_partitions_fdisk() {
-    DEV="$1"
+create_partitions() {
+    local dev="$1"
 
-    fdisk "$DEV" <<EOF
+    log "Partitioning $dev"
+
+    fdisk "$dev" <<EOF || return 1
 g
 n
 1
@@ -69,11 +68,13 @@ n
 
 t
 2
-20
+23
 w
 EOF
 
-    base=$(basename "$DEV")
+    local base
+    base=$(basename "$dev")
+
     if [[ "$base" =~ ^(nvme|mmcblk) ]]; then
         echo "/dev/${base}p1 /dev/${base}p2"
     else
@@ -82,97 +83,63 @@ EOF
 }
 
 format_partitions() {
-    EFI="$1"
-    ROOT="$2"
-    mkfs.fat -F32 "$EFI"
-    mkfs.ext4 -F "$ROOT"
+    mkfs.fat -F32 "$1" || return 1
+    mkfs.ext4 -L "Solmira Linux Root" -F "$2" || return 1
 }
 
 mount_partitions() {
-    EFI="$1"
-    ROOT="$2"
-
-    mount "$ROOT" /mnt
+    mount "$2" /mnt || return 1
     mkdir -p /mnt/boot/efi
-    mount "$EFI" /mnt/boot/efi
+    mount "$1" /mnt/boot/efi || return 1
 }
 
-# -----------------------------
-# SYSTEM CONFIGURATION
-# -----------------------------
-set_locale() {
-    arch-chroot /mnt sed -i 's/#en_US.UTF-8/en_US.UTF-8/' /etc/locale.gen
-    arch-chroot /mnt locale-gen
-    echo "LANG=en_US.UTF-8" > /mnt/etc/locale.conf
-}
-
-set_timezone() {
-    arch-chroot /mnt ln -sf /usr/share/zoneinfo/America/New_York /etc/localtime
-    arch-chroot /mnt hwclock --systohc
-}
-
-set_keymap() {
-    echo "KEYMAP=us" > /mnt/etc/vconsole.conf
-}
-
-set_hostname() {
-    HOST="$1"
-    echo "$HOST" > /mnt/etc/hostname
-}
-
-create_user() {
-    USERNAME="$1"
-    PASS="$2"
-
-    echo "root:$PASS" | arch-chroot /mnt chpasswd
-    arch-chroot /mnt useradd -m -G wheel "$USERNAME"
-    echo "$USERNAME:$PASS" | arch-chroot /mnt chpasswd
-
-    arch-chroot /mnt bash -c 'echo "%wheel ALL=(ALL) ALL" > /etc/sudoers.d/00-wheel'
-    arch-chroot /mnt chmod 440 /etc/sudoers.d/00-wheel
-}
-
-# -----------------------------
-# AUR HELPER
-# -----------------------------
-ask_aur() {
-    whiptail --yesno "Enable AUR using paru?" 10 60 && echo yes || echo no
-}
-
-install_paru() {
-    USER="$1"
-
-    arch-chroot /mnt pacman -S --noconfirm --needed base-devel git
-
-    arch-chroot /mnt sudo -u "$USER" bash -c "
-        rustup default stable &&
-        cd ~ &&
-        git clone https://aur.archlinux.org/paru.git &&
-        cd paru &&
-        makepkg -si --noconfirm
-    "
-}
-
-# -----------------------------
-# BASE SYSTEM
-# -----------------------------
 install_base() {
-    pacstrap /mnt solmira-desktop
+    pacstrap /mnt solmira-desktop || return 1
 }
 
 generate_fstab() {
-    genfstab -U /mnt >> /mnt/etc/fstab
+    genfstab -U /mnt >> /mnt/etc/fstab || return 1
+}
+
+configure_system() {
+    arch-chroot /mnt bash <<EOF || return 1
+sed -i 's/#en_US.UTF-8/en_US.UTF-8/' /etc/locale.gen
+locale-gen
+echo "LANG=en_US.UTF-8" > /etc/locale.conf
+ln -sf /usr/share/zoneinfo/America/New_York /etc/localtime
+hwclock --systohc
+timedatectl set-ntp true
+systemctl enable systemd-timesyncd
+systemctl enable apparmor
+systemctl enable NetworkManager
+echo "KEYMAP=us" > /etc/vconsole.conf
+EOF
+}
+
+set_hostname() {
+    echo "$1" > /mnt/etc/hostname || return 1
+}
+
+create_user() {
+    arch-chroot /mnt bash <<EOF || return 1
+echo "root:$2" | chpasswd
+useradd -m -G wheel $1
+echo "$1:$2" | chpasswd
+echo "%wheel ALL=(ALL) ALL" > /etc/sudoers.d/00-wheel
+chmod 440 /etc/sudoers.d/00-wheel
+EOF
 }
 
 install_bootloader() {
     arch-chroot /mnt grub-install \
         --target=x86_64-efi \
         --efi-directory=/boot/efi \
-        --bootloader-id="Solmira Linux"
-    arch-chroot /mnt grub-mkconfig -o /boot/grub/grub.cfg
+        --bootloader-id="Solmira Linux" || return 1
+
+    arch-chroot /mnt grub-mkconfig -o /boot/grub/grub.cfg || return 1
 }
 
 finish_screen() {
-    whiptail --title "Done! :D" \
-        --msgbox "Solmira Linux has been successfully installed.\nYou may now reboot." 10 60
+    whiptail --title "Installation Complete :D" \
+        --msgbox "Solmira Linux was installed successfully.\nYou may now reboot into your new system." 10 60
 }
