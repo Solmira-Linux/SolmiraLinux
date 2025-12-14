@@ -35,9 +35,22 @@ welcome_screen() {
 }
 
 select_disk() {
-    mapfile -t items < <(lsblk -d -o NAME,SIZE | awk 'NR>1 {print "/dev/"$1, $2}')
-    [[ ${#items[@]} -eq 0 ]] && fail "No disks detected."
+    # Build disk menu options
+    items=()
+    while IFS= read -r line; do
+        # Each line will be: /dev/sda "500G"
+        disk=$(echo "$line" | awk '{print $1}')
+        size=$(echo "$line" | awk '{print $2}')
+        items+=("$disk" "$size")
+    done < <(lsblk -d -o NAME,SIZE | awk 'NR>1 {print "/dev/"$1, $2}')
 
+    # Check if any disks found
+    if [ ${#items[@]} -eq 0 ]; then
+        whiptail --title "Error" --msgbox "No disks detected." 8 40
+        exit 1
+    fi
+
+    # Show whiptail menu
     whiptail --title "Disk Selection" \
         --menu "Select installation disk:" 20 60 10 \
         "${items[@]}" 3>&1 1>&2 2>&3
@@ -48,33 +61,25 @@ confirm_wipe() {
         || fail "Installation cancelled."
 }
 
-create_partitions() {
-    local dev="$1"
 
-    log "Partitioning $dev"
+create_partitions_fdisk() {
+    DEV="$1"
 
-    fdisk "$dev" <<EOF || return 1
-g
-n
-1
+    echo "Creating GPT partition table on $DEV..."
+    parted -s "$DEV" mklabel gpt
 
-+1G
-t
-1
-1
-n
-2
+    echo "Creating EFI partition (1G)..."
+    parted -s "$DEV" mkpart ESP fat32 1MiB 1025MiB
+    parted -s "$DEV" set 1 boot on
 
+    echo "Creating root partition (rest of disk)..."
+    parted -s "$DEV" mkpart primary ext4 1025MiB 100%
 
-t
-2
-23
-w
-EOF
+    # Refresh kernel partition table
+    partprobe "$DEV"
+    sleep 1
 
-    local base
-    base=$(basename "$dev")
-
+    base=$(basename "$DEV")
     if [[ "$base" =~ ^(nvme|mmcblk) ]]; then
         echo "/dev/${base}p1 /dev/${base}p2"
     else
@@ -83,14 +88,26 @@ EOF
 }
 
 format_partitions() {
-    mkfs.fat -F32 "$1" || return 1
-    mkfs.ext4 -L "Solmira Linux Root" -F "$2" || return 1
+    EFI="$1"
+    ROOT="$2"
+
+    echo "Formatting EFI partition: $EFI"
+    mkfs.fat -F32 "$EFI" || { echo "ERROR: Failed to format EFI partition"; exit 1; }
+
+    echo "Formatting root partition: $ROOT"
+    mkfs.ext4 -L "Solmira Linux Root" -F "$ROOT" || { echo "ERROR: Failed to format root partition"; exit 1; }
 }
 
 mount_partitions() {
-    mount "$2" /mnt || return 1
+    EFI="$1"
+    ROOT="$2"
+
+    echo "Mounting root partition: $ROOT -> /mnt"
+    mount "$ROOT" /mnt || { echo "ERROR: Failed to mount root"; exit 1; }
+
+    echo "Mounting EFI partition: $EFI -> /mnt/boot/efi"
     mkdir -p /mnt/boot/efi
-    mount "$1" /mnt/boot/efi || return 1
+    mount "$EFI" /mnt/boot/efi || { echo "ERROR: Failed to mount EFI"; exit 1; }
 }
 
 install_base() {

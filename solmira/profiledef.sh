@@ -24,4 +24,5 @@ file_permissions=(
   ["/usr/local/bin/livecd-sound"]="0:0:755"
   ["/usr/local/bin/installer.sh"]="0:0:755"
   ["/usr/local/bin/functions.sh"]="0:0:755"
+  ["/root/Desktop/install-solmira.desktop"]="0:0:755"
 )
