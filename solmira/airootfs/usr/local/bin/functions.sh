@@ -111,7 +111,16 @@ mount_partitions() {
 }
 
 install_base() {
-    pacstrap /mnt solmira-desktop || return 1
+    # yes i know this is a lot of stuff
+    pacstrap /mnt \
+  mkinitcpio pipewire pipewire-jack pipewire-pulse wireplumber qt6-multimedia-ffmpeg noto-fonts \
+  base base-devel linux linux-firmware linux-headers fakeroot binutils debugedit \
+  grub efibootmgr networkmanager sudo \
+  plasma-meta dolphin konsole kate partitionmanager okular gwenview kalk haruna elisa \
+  apparmor firewalld plasma-firewall clamav \
+  firefox libreoffice-still gimp inkscape \
+  gamemode gamescope \
+  pacman-contrib flatpak rustup nano vim
 }
 
 generate_fstab() {
