@@ -19,7 +19,7 @@ You can also build the ISO through the [GitHub mirror](https://github.com/Solmir
 
 ## System Requirements
 These are the recommended system requirements to build a Solmira Linux image:
-- Arch Linux (Kernel version 6.12+ recommended)
+- Arch Linux (Kernel version 6.12+ recommended + WSL also works)
 - Fast internet connection (Ethernet recommended)
 
 Of course, you can also use any other Arch-based distro like EndeavourOS to build this image.
