@@ -62,7 +62,7 @@ confirm_wipe() {
 }
 
 
-create_partitions_fdisk() {
+create_partitions() {
     DEV="$1"
 
     echo "Creating GPT partition table on $DEV..."
@@ -144,6 +144,7 @@ EOF
 
 set_hostname() {
     echo "$1" > /mnt/etc/hostname || return 1
+    echo "127.0.1.1 $1.localdomain $1" >> /mnt/etc/hosts || return 1
 }
 
 create_user() {
