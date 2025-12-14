@@ -29,8 +29,8 @@ check_root() {
 }
 
 welcome_screen() {
-    whiptail --title "Welcome to Solmira Linux" \
-        --msgbox "This installer will guide you through installing Solmira Linux." 10 60 \
+    whiptail --title "Welcome to Solmira Linux :D" \
+        --msgbox "This installer will guide you through installing Solmira Linux on your computer." 10 60 \
         || exit 0
 }
 
