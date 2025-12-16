@@ -9,6 +9,8 @@ Keep in mind that as of right now, this distro is broken. Installer doesn't work
 
 #### Codeberg repository: https://codeberg.org/Solmira-Linux/SolmiraLinux
 
+The Codeberg repository is private at the moment.
+
 
 ## Getting Started
 
